@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useData } from '../contexts/DataContext';
 import { Note } from '../types';
-import { Plus, Trash2, Edit3, Share2, FileText, Sparkles } from 'lucide-react';
+import { Plus, Trash2, Edit3, Share2, FileText, Sparkles, ArrowRight } from 'lucide-react';
 import NoteEditor from './NoteEditor';
 
 export default function NotesPage() {
@@ -13,84 +13,59 @@ export default function NotesPage() {
 
   const allNotes = user?.role === 'teacher' ? getSharedNotes() : getMyNotes();
 
-  if (editingNote) {
-    return <NoteEditor note={editingNote} onBack={() => setEditingNote(null)} />;
-  }
-
-  if (creating) {
-    return <NoteEditor onBack={() => setCreating(false)} />;
-  }
+  if (editingNote) return <NoteEditor note={editingNote} onBack={() => setEditingNote(null)} />;
+  if (creating) return <NoteEditor onBack={() => setCreating(false)} />;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8 max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">
+          <p className="section-label mb-1">Библиотека</p>
+          <h2 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>
             {user?.role === 'teacher' ? 'Конспекты курса' : 'Мои конспекты'}
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm mt-1" style={{ color: 'var(--color-text-secondary)' }}>
             {allNotes.length} {allNotes.length === 1 ? 'конспект' : allNotes.length < 5 ? 'конспекта' : 'конспектов'}
           </p>
         </div>
         {user?.role === 'student' && (
-          <button
-            onClick={() => setCreating(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition shadow-sm"
-          >
+          <button onClick={() => setCreating(true)} className="btn-primary">
             <Plus className="w-4 h-4" /> Новый конспект
           </button>
         )}
       </div>
 
       {/* Notes grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {allNotes.map(note => {
           const topic = course.topics.find(t => t.id === note.topicId);
           return (
-            <div
-              key={note.id}
-              className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
-            >
-              <div className="p-5">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-indigo-600" />
+            <div key={note.id} className="program-card group">
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'var(--color-light-bg)' }}>
+                    <FileText className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
                   </div>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1.5">
                     {note.isShared && (
-                      <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
-                        <Share2 className="w-3 h-3 inline" /> Общий
-                      </span>
+                      <span className="uni-badge uni-badge-success"><Share2 className="w-3 h-3" /> Общий</span>
                     )}
                     {note.isOfficial && (
-                      <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded-full">
-                        <Sparkles className="w-3 h-3 inline" /> Официальный
-                      </span>
+                      <span className="uni-badge uni-badge-accent"><Sparkles className="w-3 h-3" /> Офиц.</span>
                     )}
                   </div>
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">{note.title}</h3>
-                <p className="text-xs text-gray-500 mb-2">
-                  Тема: {topic?.title || 'Не привязана'}
-                </p>
-                <p className="text-xs text-gray-400">
-                  {note.authorName} • {new Date(note.updatedAt).toLocaleDateString('ru-RU')}
-                </p>
+                <h3 className="font-bold text-lg mb-2 line-clamp-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>{note.title}</h3>
+                <p className="text-xs mb-1" style={{ color: 'var(--color-text-muted)' }}>Тема: {topic?.title || 'Не привязана'}</p>
+                <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{note.authorName} • {new Date(note.updatedAt).toLocaleDateString('ru-RU')}</p>
               </div>
-              <div className="px-5 py-3 bg-gray-50 border-t border-gray-100 flex gap-2">
-                <button
-                  onClick={() => setEditingNote(note)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 text-sm text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-medium"
-                >
+              <div className="px-6 py-4 flex gap-2" style={{ borderTop: '1px solid var(--color-border-light)' }}>
+                <button onClick={() => setEditingNote(note)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-medium transition" style={{ color: 'var(--color-primary)' }} onMouseOver={e => e.currentTarget.style.backgroundColor = 'var(--color-light-bg)'} onMouseOut={e => e.currentTarget.style.backgroundColor = 'transparent'}>
                   <Edit3 className="w-4 h-4" /> Открыть
                 </button>
                 {note.authorId === user?.id && (
-                  <button
-                    onClick={() => {
-                      if (confirm('Удалить конспект?')) deleteNote(note.id);
-                    }}
-                    className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition"
-                  >
+                  <button onClick={() => { if (confirm('Удалить конспект?')) deleteNote(note.id); }} className="p-2 rounded-lg transition" style={{ color: '#DC2626' }} onMouseOver={e => e.currentTarget.style.backgroundColor = '#FEF2F2'} onMouseOut={e => e.currentTarget.style.backgroundColor = 'transparent'}>
                     <Trash2 className="w-4 h-4" />
                   </button>
                 )}
@@ -101,15 +76,13 @@ export default function NotesPage() {
       </div>
 
       {allNotes.length === 0 && (
-        <div className="text-center py-12">
-          <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">Пока нет конспектов</p>
+        <div className="text-center py-16 uni-card">
+          <FileText className="w-16 h-16 mx-auto mb-4" style={{ color: 'var(--color-text-muted)' }} />
+          <p className="text-lg font-medium mb-2" style={{ color: 'var(--color-text)' }}>Пока нет конспектов</p>
+          <p className="text-sm mb-6" style={{ color: 'var(--color-text-secondary)' }}>Создайте свой первый конспект и начните учиться</p>
           {user?.role === 'student' && (
-            <button
-              onClick={() => setCreating(true)}
-              className="mt-4 px-6 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
-            >
-              Создать первый конспект
+            <button onClick={() => setCreating(true)} className="btn-primary">
+              <Plus className="w-4 h-4" /> Создать конспект
             </button>
           )}
         </div>

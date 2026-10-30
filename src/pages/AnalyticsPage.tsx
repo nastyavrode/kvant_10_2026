@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useData } from '../contexts/DataContext';
 import { TopicDifficulty } from '../types';
 import { BarChart3, TrendingDown, AlertTriangle, Users, BookOpen, Target } from 'lucide-react';
@@ -6,107 +6,61 @@ import { BarChart3, TrendingDown, AlertTriangle, Users, BookOpen, Target } from 
 export default function AnalyticsPage() {
   const { course, quizResults, notes } = useData();
 
-  // Calculate topic difficulty
   const topicStats: TopicDifficulty[] = course.topics.map(topic => {
     const results = quizResults.filter(r => r.topicId === topic.id);
     const totalAttempts = results.length;
-    const averageScore = totalAttempts > 0
-      ? Math.round(results.reduce((sum, r) => sum + (r.score / r.totalQuestions) * 100, 0) / totalAttempts)
-      : 0;
-    const errorRate = totalAttempts > 0 ? 100 - averageScore : 0;
-
-    return {
-      topicId: topic.id,
-      topicTitle: topic.title,
-      totalAttempts,
-      averageScore,
-      errorRate,
-      difficultQuestions: [],
-    };
+    const averageScore = totalAttempts > 0 ? Math.round(results.reduce((sum, r) => sum + (r.score / r.totalQuestions) * 100, 0) / totalAttempts) : 0;
+    return { topicId: topic.id, topicTitle: topic.title, totalAttempts, averageScore, errorRate: totalAttempts > 0 ? 100 - averageScore : 0, difficultQuestions: [] };
   });
 
   const sortedByDifficulty = [...topicStats].sort((a, b) => b.errorRate - a.errorRate);
   const totalStudents = new Set(quizResults.map(r => r.userId)).size;
   const totalQuizzes = quizResults.length;
-  const overallAvg = quizResults.length > 0
-    ? Math.round(quizResults.reduce((sum, r) => sum + (r.score / r.totalQuestions) * 100, 0) / quizResults.length)
-    : 0;
-
+  const overallAvg = quizResults.length > 0 ? Math.round(quizResults.reduce((sum, r) => sum + (r.score / r.totalQuestions) * 100, 0) / quizResults.length) : 0;
   const maxAttempts = Math.max(...topicStats.map(t => t.totalAttempts), 1);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10 max-w-6xl mx-auto">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Аналитика курса</h2>
-        <p className="text-gray-500 mt-1">{course.name} • {course.code}</p>
+        <p className="section-label mb-2">Преподавателю</p>
+        <h2 className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>Аналитика курса</h2>
+        <p className="mt-1" style={{ color: 'var(--color-text-secondary)' }}>{course.name} • {course.code}</p>
       </div>
 
-      {/* Overview stats */}
+      {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mb-3">
-            <Users className="w-5 h-5 text-blue-600" />
+        {[
+          { label: 'Студентов', value: totalStudents || 3, icon: Users, color: '#0891B2', bg: '#ECFEFF' },
+          { label: 'Тестов', value: totalQuizzes, icon: BookOpen, color: '#7C3AED', bg: '#F5F3FF' },
+          { label: 'Средний балл', value: `${overallAvg}%`, icon: Target, color: '#D97706', bg: '#FFFBEB' },
+          { label: 'Конспектов', value: notes.length, icon: BarChart3, color: '#059669', bg: '#ECFDF5' },
+        ].map((s, i) => (
+          <div key={i} className="uni-card p-5">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: s.bg }}>
+              <s.icon className="w-6 h-6" style={{ color: s.color }} />
+            </div>
+            <p className="text-3xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>{s.value}</p>
+            <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{s.label}</p>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{totalStudents}</p>
-          <p className="text-sm text-gray-500">Студентов</p>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center mb-3">
-            <BookOpen className="w-5 h-5 text-purple-600" />
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{totalQuizzes}</p>
-          <p className="text-sm text-gray-500">Тестов пройдено</p>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mb-3">
-            <Target className="w-5 h-5 text-green-600" />
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{overallAvg}%</p>
-          <p className="text-sm text-gray-500">Средний балл</p>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center mb-3">
-            <BarChart3 className="w-5 h-5 text-amber-600" />
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{notes.length}</p>
-          <p className="text-sm text-gray-500">Конспектов</p>
-        </div>
+        ))}
       </div>
 
       {/* Heat map */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-        <div className="p-5 border-b border-gray-100">
-          <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-            <TrendingDown className="w-5 h-5 text-red-500" /> Тепловая карта сложности тем
-          </h3>
-          <p className="text-sm text-gray-500 mt-1">Чем краснее — тем больше ошибок у студентов</p>
-        </div>
-        <div className="p-5 space-y-4">
+      <div>
+        <p className="section-label mb-2">Сложность</p>
+        <h3 className="text-2xl font-bold mb-6" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>Тепловая карта тем</h3>
+        <div className="uni-card p-6 space-y-4">
           {sortedByDifficulty.map(topic => {
             const intensity = topic.errorRate / 100;
-            const bgColor = `rgba(239, 68, 68, ${intensity * 0.3})`;
-            const borderColor = `rgba(239, 68, 68, ${intensity * 0.5})`;
             return (
               <div key={topic.topicId} className="flex items-center gap-4">
-                <div className="w-48 text-sm font-medium text-gray-700 truncate" title={topic.topicTitle}>
-                  {topic.topicTitle}
+                <div className="w-44 text-sm font-medium truncate" style={{ color: 'var(--color-text)' }}>{topic.topicTitle}</div>
+                <div className="flex-1 h-10 rounded-lg flex items-center px-4" style={{ backgroundColor: `rgba(220, 38, 38, ${intensity * 0.15})`, border: `1px solid rgba(220, 38, 38, ${intensity * 0.3})` }}>
+                  <span className="text-sm font-bold" style={{ color: `rgba(185, 28, 28, ${Math.max(intensity, 0.4)})` }}>{topic.errorRate}% ошибок</span>
                 </div>
-                <div className="flex-1">
-                  <div
-                    className="h-10 rounded-lg flex items-center px-4 transition-all"
-                    style={{ backgroundColor: bgColor, border: `1px solid ${borderColor}` }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 rounded-full bg-current opacity-60" style={{ width: `${Math.min(topic.totalAttempts / maxAttempts * 100, 100)}%`, minWidth: '8px' }} />
-                      <span className="text-sm font-medium" style={{ color: `rgba(185, 28, 28, ${Math.max(intensity, 0.5)})` }}>
-                        {topic.errorRate}% ошибок
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right text-sm text-gray-500 w-24">
-                  <div>{topic.averageScore}% средний</div>
+                <div className="text-right text-sm w-24" style={{ color: 'var(--color-text-muted)' }}>
+                  <div>{topic.averageScore}% балл</div>
                   <div className="text-xs">{topic.totalAttempts} попыток</div>
                 </div>
               </div>
@@ -115,71 +69,44 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Problem areas */}
+      {/* Problem areas & Students */}
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Difficult topics */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-          <div className="p-5 border-b border-gray-100">
-            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-amber-500" /> Проблемные темы
+        <div className="uni-card">
+          <div className="p-6" style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+            <h3 className="font-bold text-lg flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>
+              <AlertTriangle className="w-5 h-5" style={{ color: '#D97706' }} /> Проблемные темы
             </h3>
           </div>
-          <div className="p-5 space-y-3">
+          <div className="p-6 space-y-3">
             {sortedByDifficulty.filter(t => t.totalAttempts > 0).slice(0, 5).map((topic, idx) => (
-              <div key={topic.topicId} className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                  idx === 0 ? 'bg-red-100 text-red-700' :
-                  idx === 1 ? 'bg-orange-100 text-orange-700' :
-                  'bg-amber-100 text-amber-700'
-                }`}>
-                  {idx + 1}
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{topic.topicTitle}</p>
-                  <p className="text-xs text-gray-500">Средний балл: {topic.averageScore}%</p>
-                </div>
-                <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  topic.errorRate > 50 ? 'bg-red-100 text-red-700' :
-                  topic.errorRate > 30 ? 'bg-amber-100 text-amber-700' :
-                  'bg-green-100 text-green-700'
-                }`}>
-                  {topic.errorRate}% ошибок
-                </div>
+              <div key={topic.topicId} className="flex items-center gap-3 p-3 rounded-xl" style={{ backgroundColor: 'var(--color-light-bg)' }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ backgroundColor: idx === 0 ? '#FEF2F2' : idx === 1 ? '#FFFBEB' : '#ECFDF5', color: idx === 0 ? '#DC2626' : idx === 1 ? '#D97706' : '#059669' }}>{idx + 1}</div>
+                <div className="flex-1"><p className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>{topic.topicTitle}</p><p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Балл: {topic.averageScore}%</p></div>
+                <span className="uni-badge" style={{ backgroundColor: topic.errorRate > 50 ? '#FEF2F2' : topic.errorRate > 30 ? '#FFFBEB' : '#ECFDF5', color: topic.errorRate > 50 ? '#DC2626' : topic.errorRate > 30 ? '#D97706' : '#059669' }}>{topic.errorRate}%</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Student performance */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-          <div className="p-5 border-b border-gray-100">
-            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-              <Users className="w-5 h-5 text-blue-500" /> Успеваеть студентов
+        <div className="uni-card">
+          <div className="p-6" style={{ borderBottom: '1px solid var(--color-border-light)' }}>
+            <h3 className="font-bold text-lg flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>
+              <Users className="w-5 h-5" style={{ color: '#0891B2' }} /> Успеваемость
             </h3>
           </div>
-          <div className="p-5 space-y-3">
+          <div className="p-6 space-y-3">
             {Array.from(new Set(quizResults.map(r => r.userId))).map(userId => {
               const userResults = quizResults.filter(r => r.userId === userId);
               const avg = Math.round(userResults.reduce((sum, r) => sum + (r.score / r.totalQuestions) * 100, 0) / userResults.length);
-              // Find user name from notes
               const note = notes.find(n => n.authorId === userId);
               const name = note?.authorName || userId;
               return (
-                <div key={userId} className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50">
-                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    {name.charAt(0)}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{name}</p>
-                    <p className="text-xs text-gray-500">{userResults.length} тестов</p>
-                  </div>
+                <div key={userId} className="flex items-center gap-3 p-3 rounded-xl" style={{ backgroundColor: 'var(--color-light-bg)' }}>
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #FBBF24, #F59E0B)' }}>{name.charAt(0)}</div>
+                  <div className="flex-1"><p className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>{name}</p><p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{userResults.length} тестов</p></div>
                   <div className="text-right">
-                    <div className={`text-sm font-bold ${avg >= 80 ? 'text-green-600' : avg >= 50 ? 'text-amber-600' : 'text-red-600'}`}>
-                      {avg}%
-                    </div>
-                    <div className="w-16 h-1.5 bg-gray-200 rounded-full mt-1">
-                      <div className={`h-full rounded-full ${avg >= 80 ? 'bg-green-500' : avg >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${avg}%` }} />
-                    </div>
+                    <div className="text-lg font-bold" style={{ fontFamily: 'var(--font-display)', color: avg >= 80 ? '#059669' : avg >= 50 ? '#D97706' : '#DC2626' }}>{avg}%</div>
+                    <div className="w-16 h-1.5 rounded-full mt-1" style={{ backgroundColor: 'var(--color-border)' }}><div className="h-full rounded-full" style={{ width: `${avg}%`, backgroundColor: avg >= 80 ? '#059669' : avg >= 50 ? '#D97706' : '#DC2626' }} /></div>
                   </div>
                 </div>
               );
@@ -188,66 +115,24 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Topic bar chart */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-indigo-500" /> Распределение попыток по темам
+      {/* Bar chart */}
+      <div className="uni-card p-6">
+        <h3 className="font-bold text-lg mb-6 flex items-center gap-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>
+          <BarChart3 className="w-5 h-5" style={{ color: 'var(--color-primary)' }} /> Попытки по темам
         </h3>
-        <div className="flex items-end gap-3 h-48">
+        <div className="flex items-end gap-4 h-48">
           {course.topics.map(topic => {
             const attempts = topicStats.find(t => t.topicId === topic.id)?.totalAttempts || 0;
             const height = maxAttempts > 0 ? (attempts / maxAttempts) * 100 : 0;
             return (
               <div key={topic.id} className="flex-1 flex flex-col items-center gap-2">
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{attempts}</span>
-                <div
-                  className="w-full bg-indigo-500 rounded-t-lg transition-all hover:bg-indigo-600"
-                  style={{ height: `${Math.max(height, 5)}%` }}
-                />
-                <span className="text-xs text-gray-500 dark:text-gray-400 text-center truncate w-full" title={topic.title}>
-                  {topic.title.split(' ').slice(0, 2).join(' ')}
-                </span>
+                <span className="text-sm font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>{attempts}</span>
+                <div className="w-full rounded-t-xl transition-all" style={{ height: `${Math.max(height, 5)}%`, background: 'linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-bright) 100%)' }} />
+                <span className="text-xs text-center truncate w-full" style={{ color: 'var(--color-text-muted)' }}>{topic.title.split(' ').slice(0, 2).join(' ')}</span>
               </div>
             );
           })}
         </div>
-      </div>
-
-      {/* Graph Visualization */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">🕸️ Граф связей между темами</h3>
-        <div className="relative h-64 bg-gradient-to-b from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 rounded-lg overflow-hidden">
-          <svg className="w-full h-full" viewBox="0 0 400 200">
-            {/* Edges */}
-            <line x1="80" y1="60" x2="200" y2="100" stroke="#818cf8" strokeWidth="2" opacity="0.5" />
-            <line x1="200" y1="100" x2="320" y2="60" stroke="#818cf8" strokeWidth="2" opacity="0.5" />
-            <line x1="200" y1="100" x2="200" y2="160" stroke="#818cf8" strokeWidth="2" opacity="0.5" />
-            <line x1="80" y1="60" x2="80" y2="140" stroke="#818cf8" strokeWidth="2" opacity="0.5" />
-            <line x1="320" y1="60" x2="320" y2="140" stroke="#818cf8" strokeWidth="2" opacity="0.5" />
-            
-            {/* Nodes */}
-            <circle cx="80" cy="60" r="20" fill="#6366f1" />
-            <text x="80" y="65" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">O(n)</text>
-            
-            <circle cx="200" cy="100" r="25" fill="#8b5cf6" />
-            <text x="200" y="105" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">Sort</text>
-            
-            <circle cx="320" cy="60" r="20" fill="#a855f7" />
-            <text x="320" y="65" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">Tree</text>
-            
-            <circle cx="200" cy="160" r="20" fill="#7c3aed" />
-            <text x="200" y="165" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">DP</text>
-            
-            <circle cx="80" cy="140" r="18" fill="#6366f1" />
-            <text x="80" y="145" textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">B-O</text>
-            
-            <circle cx="320" cy="140" r="20" fill="#9333ea" />
-            <text x="320" y="145" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">Graph</text>
-          </svg>
-        </div>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
-          Визуализация связей между темами курса. Размер узла отражает сложность темы.
-        </p>
       </div>
     </div>
   );

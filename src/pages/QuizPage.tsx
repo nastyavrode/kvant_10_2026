@@ -26,292 +26,156 @@ export default function QuizPage({ preGeneratedQuestions, noteId = '', topicId =
 
   const myNotes = getMyNotes();
 
-  useEffect(() => {
-    if (preGeneratedQuestions) return;
-    // Don't auto-generate, let user select a note first
-    setLoading(false);
-  }, []);
+  useEffect(() => { if (preGeneratedQuestions) return; setLoading(false); }, []);
 
   const handleGenerate = async () => {
-    if (!selectedNoteId) {
-      setError('Выберите конспект');
-      return;
-    }
-    setLoading(true);
-    setError('');
+    if (!selectedNoteId) { setError('Выберите конспект'); return; }
+    setLoading(true); setError('');
     try {
       const note = notes.find(n => n.id === selectedNoteId);
       if (!note) throw new Error('Конспект не найден');
       const text = note.blocks.map(b => b.content).join('\n');
-      const generated = await generateQuestions({
-        text,
-        noteTitle: note.title,
-        count: 7,
-      });
+      const generated = await generateQuestions({ text, noteTitle: note.title, count: 7 });
       setQuestions(generated);
       setSelectedTopicId(note.topicId);
-    } catch (err: any) {
-      setError(err.message || 'Ошибка генерации');
-    }
+    } catch (err: any) { setError(err.message || 'Ошибка генерации'); }
     setLoading(false);
   };
 
-  const handleAnswer = (answer: string) => {
-    const q = questions[currentQ];
-    setAnswers({ ...answers, [q.id]: answer });
-  };
-
-  const handleNext = () => {
-    if (currentQ < questions.length - 1) {
-      setCurrentQ(currentQ + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentQ > 0) {
-      setCurrentQ(currentQ - 1);
-    }
-  };
+  const handleAnswer = (answer: string) => { const q = questions[currentQ]; setAnswers({ ...answers, [q.id]: answer }); };
+  const handleNext = () => { if (currentQ < questions.length - 1) setCurrentQ(currentQ + 1); };
+  const handlePrev = () => { if (currentQ > 0) setCurrentQ(currentQ - 1); };
 
   const handleSubmit = () => {
     setShowResults(true);
-    // Calculate score
     let correct = 0;
     questions.forEach(q => {
       const answer = answers[q.id] || '';
-      if (answer.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim() ||
-          answer.toLowerCase().includes(q.correctAnswer.toLowerCase())) {
-        correct++;
-      }
+      if (answer.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim() || answer.toLowerCase().includes(q.correctAnswer.toLowerCase())) correct++;
     });
-
-    const result: QuizResult = {
-      id: `qr-${Date.now()}`,
-      userId: user?.id || '',
-      noteId: selectedNoteId || noteId,
-      topicId: selectedTopicId || topicId,
-      questions,
-      answers,
-      score: correct,
-      totalQuestions: questions.length,
-      completedAt: new Date().toISOString(),
-    };
-    addQuizResult(result);
+    addQuizResult({ id: `qr-${Date.now()}`, userId: user?.id || '', noteId: selectedNoteId || noteId, topicId: selectedTopicId || topicId, questions, answers, score: correct, totalQuestions: questions.length, completedAt: new Date().toISOString() });
   };
 
-  const getScore = () => {
-    let correct = 0;
-    questions.forEach(q => {
-      const answer = answers[q.id] || '';
-      if (answer.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim() ||
-          answer.toLowerCase().includes(q.correctAnswer.toLowerCase())) {
-        correct++;
-      }
-    });
-    return correct;
-  };
+  const getScore = () => { let c = 0; questions.forEach(q => { const a = answers[q.id] || ''; if (a.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim() || a.toLowerCase().includes(q.correctAnswer.toLowerCase())) c++; }); return c; };
+  const isCorrect = (q: QuizQuestion) => { const a = answers[q.id] || ''; return a.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim() || a.toLowerCase().includes(q.correctAnswer.toLowerCase()); };
 
-  const isCorrect = (q: QuizQuestion) => {
-    const answer = answers[q.id] || '';
-    return answer.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim() ||
-           answer.toLowerCase().includes(q.correctAnswer.toLowerCase());
-  };
-
-  // Selection screen
   if (questions.length === 0 && !loading) {
     return (
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-2xl mb-4">
-            <Brain className="w-8 h-8 text-purple-600" />
+      <div className="max-w-2xl mx-auto space-y-8">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6" style={{ backgroundColor: '#F5F3FF' }}>
+            <Brain className="w-10 h-10" style={{ color: '#7C3AED' }} />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">Самопроверка</h2>
-          <p className="text-gray-500 mt-2">Выберите конспект для генерации вопросов с помощью ИИ</p>
+          <p className="section-label mb-2">ИИ-помощник</p>
+          <h2 className="text-3xl font-bold mb-3" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>Самопроверка</h2>
+          <p style={{ color: 'var(--color-text-secondary)' }}>Выберите конспект для генерации вопросов с помощью ИИ</p>
         </div>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
-        )}
-
-        <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Выберите конспект</label>
-            <select
-              value={selectedNoteId}
-              onChange={e => setSelectedNoteId(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="">— Выберите конспект —</option>
-              {myNotes.map(n => (
-                <option key={n.id} value={n.id}>{n.title}</option>
-              ))}
-            </select>
+        {error && <div className="p-3 rounded-xl text-sm" style={{ backgroundColor: '#FEF2F2', border: '1px solid #FECACA', color: '#991B1B' }}>{error}</div>}
+        <div className="uni-card p-8">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>Выберите конспект</label>
+              <select value={selectedNoteId} onChange={e => setSelectedNoteId(e.target.value)} className="uni-input w-full">
+                <option value="">— Выберите конспект —</option>
+                {myNotes.map(n => <option key={n.id} value={n.id}>{n.title}</option>)}
+              </select>
+            </div>
+            <button onClick={handleGenerate} disabled={loading || !selectedNoteId} className="btn-accent w-full justify-center">
+              <Sparkles className="w-5 h-5" /> Сгенерировать вопросы
+            </button>
           </div>
-
-          <button
-            onClick={handleGenerate}
-            disabled={loading || !selectedNoteId}
-            className="w-full py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            <Sparkles className="w-5 h-5" /> Сгенерировать вопросы
-          </button>
         </div>
       </div>
     );
   }
 
-  // Loading
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 font-medium">ИИ генерирует вопросы...</p>
-          <p className="text-sm text-gray-400 mt-1">Анализируем конспект и создаём тест</p>
+          <div className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4" style={{ borderColor: '#E9D5FF', borderTopColor: '#7C3AED' }} />
+          <p className="text-lg font-medium" style={{ color: 'var(--color-text)' }}>ИИ генерирует вопросы...</p>
+          <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Анализируем конспект</p>
         </div>
       </div>
     );
   }
 
-  // Results
   if (showResults) {
     const score = getScore();
     const percent = Math.round((score / questions.length) * 100);
-
     return (
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 ${
-            percent >= 80 ? 'bg-green-100' : percent >= 50 ? 'bg-amber-100' : 'bg-red-100'
-          }`}>
-            <Trophy className={`w-10 h-10 ${percent >= 80 ? 'text-green-600' : percent >= 50 ? 'text-amber-600' : 'text-red-600'}`} />
+      <div className="max-w-2xl mx-auto space-y-6">
+        <div className="text-center uni-card p-8">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4" style={{ backgroundColor: percent >= 80 ? '#ECFDF5' : percent >= 50 ? '#FFFBEB' : '#FEF2F2' }}>
+            <Trophy className="w-10 h-10" style={{ color: percent >= 80 ? '#059669' : percent >= 50 ? '#D97706' : '#DC2626' }} />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">Результаты</h2>
-          <p className="text-4xl font-bold mt-2" style={{ color: percent >= 80 ? '#16a34a' : percent >= 50 ? '#d97706' : '#dc2626' }}>
-            {percent}%
-          </p>
-          <p className="text-gray-500">{score} из {questions.length} правильных ответов</p>
+          <p className="section-label mb-2">Результат</p>
+          <h2 className="text-5xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)', color: percent >= 80 ? '#059669' : percent >= 50 ? '#D97706' : '#DC2626' }}>{percent}%</h2>
+          <p style={{ color: 'var(--color-text-secondary)' }}>{score} из {questions.length} правильных ответов</p>
         </div>
-
-        <div className="space-y-4">
+        <div className="space-y-3">
           {questions.map((q, idx) => {
             const correct = isCorrect(q);
             return (
-              <div key={q.id} className={`rounded-xl border p-5 ${correct ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+              <div key={q.id} className="uni-card p-5" style={{ borderColor: correct ? '#BBF7D0' : '#FECACA', borderWidth: '2px' }}>
                 <div className="flex items-start gap-3">
-                  {correct ? <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" /> : <XCircle className="w-5 h-5 text-red-600 mt-0.5" />}
+                  {correct ? <CheckCircle className="w-5 h-5 mt-0.5 shrink-0" style={{ color: '#059669' }} /> : <XCircle className="w-5 h-5 mt-0.5 shrink-0" style={{ color: '#DC2626' }} />}
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900 mb-1">{idx + 1}. {q.question}</p>
-                    <p className="text-sm text-gray-600">
-                      Ваш ответ: <span className={correct ? 'text-green-700 font-medium' : 'text-red-700 font-medium'}>{answers[q.id] || '—'}</span>
-                    </p>
-                    {!correct && (
-                      <p className="text-sm text-green-700 mt-1">Правильный ответ: {q.correctAnswer}</p>
-                    )}
-                    <p className="text-sm text-gray-500 mt-2 italic">💡 {q.explanation}</p>
+                    <p className="font-medium mb-1" style={{ color: 'var(--color-text)' }}>{idx + 1}. {q.question}</p>
+                    <p className="text-sm">Ваш ответ: <span className="font-medium" style={{ color: correct ? '#059669' : '#DC2626' }}>{answers[q.id] || '—'}</span></p>
+                    {!correct && <p className="text-sm mt-1" style={{ color: '#059669' }}>Правильный: {q.correctAnswer}</p>}
+                    <p className="text-sm mt-2 italic" style={{ color: 'var(--color-text-muted)' }}>💡 {q.explanation}</p>
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
-
-        <div className="mt-6 flex gap-3 justify-center">
-          <button
-            onClick={() => {
-              setShowResults(false);
-              setCurrentQ(0);
-              setAnswers({});
-            }}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
-          >
-            <RotateCcw className="w-4 h-4" /> Пройти заново
-          </button>
-          {onBack && (
-            <button
-              onClick={onBack}
-              className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition"
-            >
-              Вернуться к конспекту
-            </button>
-          )}
+        <div className="flex gap-3 justify-center">
+          <button onClick={() => { setShowResults(false); setCurrentQ(0); setAnswers({}); }} className="btn-outline"><RotateCcw className="w-4 h-4" /> Заново</button>
+          {onBack && <button onClick={onBack} className="btn-primary">К конспекту</button>}
         </div>
       </div>
     );
   }
 
-  // Quiz in progress
   const q = questions[currentQ];
   const progress = ((currentQ + 1) / questions.length) * 100;
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {/* Progress */}
-      <div className="mb-6">
+    <div className="max-w-2xl mx-auto space-y-6">
+      <div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-gray-500">Вопрос {currentQ + 1} из {questions.length}</span>
-          <span className="text-sm font-medium text-purple-600">{Math.round(progress)}%</span>
+          <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Вопрос {currentQ + 1} из {questions.length}</span>
+          <span className="text-sm font-bold" style={{ color: 'var(--color-primary)' }}>{Math.round(progress)}%</span>
         </div>
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div className="h-full bg-purple-600 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+        <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--color-border)' }}>
+          <div className="h-full rounded-full transition-all duration-300" style={{ width: `${progress}%`, background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent))' }} />
         </div>
       </div>
-
-      {/* Question */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-        <p className="text-lg font-medium text-gray-900 mb-6">{q.question}</p>
-
+      <div className="uni-card p-8">
+        <p className="text-xl font-medium mb-6" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>{q.question}</p>
         {q.type === 'choice' && q.options ? (
           <div className="space-y-3">
             {q.options.map(option => (
-              <button
-                key={option}
-                onClick={() => handleAnswer(option)}
-                className={`w-full text-left p-4 rounded-lg border-2 transition ${
-                  answers[q.id] === option
-                    ? 'border-purple-500 bg-purple-50 text-purple-900'
-                    : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                }`}
-              >
+              <button key={option} onClick={() => handleAnswer(option)} className="w-full text-left p-4 rounded-xl border-2 transition" style={{ borderColor: answers[q.id] === option ? 'var(--color-primary)' : 'var(--color-border)', backgroundColor: answers[q.id] === option ? 'var(--color-light-bg)' : 'transparent', color: 'var(--color-text)' }}>
                 {option}
               </button>
             ))}
           </div>
         ) : (
-          <textarea
-            value={answers[q.id] || ''}
-            onChange={e => handleAnswer(e.target.value)}
-            placeholder="Введите ваш ответ..."
-            rows={4}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-          />
+          <textarea value={answers[q.id] || ''} onChange={e => handleAnswer(e.target.value)} placeholder="Введите ваш ответ..." rows={4} className="uni-input w-full resize-none" />
         )}
       </div>
-
-      {/* Navigation */}
       <div className="flex items-center justify-between">
-        <button
-          onClick={handlePrev}
-          disabled={currentQ === 0}
-          className="flex items-center gap-2 px-4 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition disabled:opacity-30"
-        >
+        <button onClick={handlePrev} disabled={currentQ === 0} className="flex items-center gap-2 px-4 py-2.5 rounded-full transition disabled:opacity-30" style={{ color: 'var(--color-text-secondary)' }}>
           <ArrowLeft className="w-4 h-4" /> Назад
         </button>
-
         {currentQ === questions.length - 1 ? (
-          <button
-            onClick={handleSubmit}
-            className="flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition"
-          >
-            <CheckCircle className="w-4 h-4" /> Завершить
-          </button>
+          <button onClick={handleSubmit} className="btn-primary"><CheckCircle className="w-4 h-4" /> Завершить</button>
         ) : (
-          <button
-            onClick={handleNext}
-            className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition"
-          >
-            Далее <ArrowRight className="w-4 h-4" />
-          </button>
+          <button onClick={handleNext} className="btn-primary">Далее <ArrowRight className="w-4 h-4" /></button>
         )}
       </div>
     </div>
