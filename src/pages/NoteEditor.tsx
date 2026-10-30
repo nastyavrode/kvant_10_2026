@@ -6,9 +6,12 @@ import { marked } from 'marked';
 import {
   ArrowLeft, Save, Plus, Trash2, Share2, Share, Brain,
   Sparkles, Type, AlignLeft, Code, Sigma, Image, FileText,
-  Lightbulb, BookOpen
+  Lightbulb, BookOpen, Download, Printer
 } from 'lucide-react';
 import { generateQuestions, simplifyText, summarizeText } from '../utils/aiService';
+import { exportToMarkdown, exportToPDF } from '../utils/exportUtils';
+import Comments from '../components/Comments';
+import TreeVisualization from '../components/TreeVisualization';
 import QuizPage from './QuizPage';
 
 interface NoteEditorProps {
@@ -178,13 +181,34 @@ export default function NoteEditor({ note, onBack }: NoteEditorProps) {
             className="text-xl font-bold text-gray-900 w-full outline-none bg-transparent placeholder-gray-300"
           />
         </div>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50"
-        >
-          <Save className="w-4 h-4" /> {saving ? 'Сохранение...' : 'Сохранить'}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              if (note) {
+                const noteData = { ...note, title: title || 'Без названия', blocks, topicId, isShared, updatedAt: new Date().toISOString() };
+                exportToMarkdown(noteData as Note);
+              }
+            }}
+            className="flex items-center gap-2 px-3 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+            title="Экспорт в Markdown"
+          >
+            <Download className="w-4 h-4" />
+          </button>
+          <button
+            onClick={exportToPDF}
+            className="flex items-center gap-2 px-3 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+            title="Экспорт в PDF"
+          >
+            <Printer className="w-4 h-4" />
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50"
+          >
+            <Save className="w-4 h-4" /> {saving ? 'Сохранение...' : 'Сохранить'}
+          </button>
+        </div>
       </div>
 
       {/* Topic selector & sharing */}
@@ -363,12 +387,22 @@ export default function NoteEditor({ note, onBack }: NoteEditorProps) {
           <button
             key={type}
             onClick={() => addBlock(type)}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600 transition"
+            className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-200 dark:hover:border-indigo-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
           >
             {blockIcons[type]} {blockLabels[type]}
           </button>
         ))}
       </div>
+
+      {/* 3D Tree Visualization */}
+      {topicId === 'topic-3' && (
+        <div className="mt-8">
+          <TreeVisualization />
+        </div>
+      )}
+
+      {/* Comments */}
+      {note && <Comments noteId={note.id} />}
     </div>
   );
 }

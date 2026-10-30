@@ -1,7 +1,8 @@
 import React from 'react';
-import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { DataProvider } from './contexts/DataContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import LoginPage from './pages/LoginPage';
 import Layout from './components/Layout';
 import StudentDashboard from './pages/StudentDashboard';
@@ -12,13 +13,6 @@ import SearchPage from './pages/SearchPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import TopicsPage from './pages/TopicsPage';
 import OfficialNotesPage from './pages/OfficialNotesPage';
-
-function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: 'student' | 'teacher' }) {
-  const { isAuthenticated, user } = useAuth();
-  if (!isAuthenticated) return <Navigate to="/login" />;
-  if (role && user?.role !== role) return <Navigate to="/" />;
-  return <>{children}</>;
-}
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -53,11 +47,13 @@ function AppRoutes() {
 
 function App() {
   return (
-    <HashRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
-    </HashRouter>
+    <ThemeProvider>
+      <HashRouter>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </HashRouter>
+    </ThemeProvider>
   );
 }
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useData } from '../contexts/DataContext';
-import { FileText, Brain, Trophy, TrendingUp, BookOpen, Clock } from 'lucide-react';
+import { FileText, Brain, Trophy, TrendingUp, BookOpen, Clock, Flame } from 'lucide-react';
+import StreakBadge from '../components/StreakBadge';
 
 export default function StudentDashboard() {
   const { user } = useAuth();
@@ -27,11 +28,16 @@ export default function StudentDashboard() {
     <div className="space-y-8">
       {/* Welcome */}
       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 lg:p-8 text-white">
-        <h1 className="text-2xl lg:text-3xl font-bold mb-2">Привет, {user?.name?.split(' ')[0]}! 👋</h1>
-        <p className="text-indigo-100 text-lg">Продолжайте учиться и создавать конспекты. Вы на верном пути!</p>
-        <div className="mt-4 flex items-center gap-2 text-sm text-indigo-200">
-          <Clock className="w-4 h-4" />
-          Курс: {course.name} • Код: {course.code}
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-bold mb-2">Привет, {user?.name?.split(' ')[0]}! 👋</h1>
+            <p className="text-indigo-100 text-lg">Продолжайте учиться и создавать конспекты. Вы на верном пути!</p>
+            <div className="mt-4 flex items-center gap-2 text-sm text-indigo-200">
+              <Clock className="w-4 h-4" />
+              Курс: {course.name} • Код: {course.code}
+            </div>
+          </div>
+          <StreakBadge />
         </div>
       </div>
 

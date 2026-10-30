@@ -189,8 +189,8 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Topic bar chart */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-        <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-indigo-500" /> Распределение попыток по темам
         </h3>
         <div className="flex items-end gap-3 h-48">
@@ -199,18 +199,55 @@ export default function AnalyticsPage() {
             const height = maxAttempts > 0 ? (attempts / maxAttempts) * 100 : 0;
             return (
               <div key={topic.id} className="flex-1 flex flex-col items-center gap-2">
-                <span className="text-xs font-medium text-gray-600">{attempts}</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{attempts}</span>
                 <div
                   className="w-full bg-indigo-500 rounded-t-lg transition-all hover:bg-indigo-600"
                   style={{ height: `${Math.max(height, 5)}%` }}
                 />
-                <span className="text-xs text-gray-500 text-center truncate w-full" title={topic.title}>
+                <span className="text-xs text-gray-500 dark:text-gray-400 text-center truncate w-full" title={topic.title}>
                   {topic.title.split(' ').slice(0, 2).join(' ')}
                 </span>
               </div>
             );
           })}
         </div>
+      </div>
+
+      {/* Graph Visualization */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">🕸️ Граф связей между темами</h3>
+        <div className="relative h-64 bg-gradient-to-b from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 rounded-lg overflow-hidden">
+          <svg className="w-full h-full" viewBox="0 0 400 200">
+            {/* Edges */}
+            <line x1="80" y1="60" x2="200" y2="100" stroke="#818cf8" strokeWidth="2" opacity="0.5" />
+            <line x1="200" y1="100" x2="320" y2="60" stroke="#818cf8" strokeWidth="2" opacity="0.5" />
+            <line x1="200" y1="100" x2="200" y2="160" stroke="#818cf8" strokeWidth="2" opacity="0.5" />
+            <line x1="80" y1="60" x2="80" y2="140" stroke="#818cf8" strokeWidth="2" opacity="0.5" />
+            <line x1="320" y1="60" x2="320" y2="140" stroke="#818cf8" strokeWidth="2" opacity="0.5" />
+            
+            {/* Nodes */}
+            <circle cx="80" cy="60" r="20" fill="#6366f1" />
+            <text x="80" y="65" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">O(n)</text>
+            
+            <circle cx="200" cy="100" r="25" fill="#8b5cf6" />
+            <text x="200" y="105" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">Sort</text>
+            
+            <circle cx="320" cy="60" r="20" fill="#a855f7" />
+            <text x="320" y="65" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">Tree</text>
+            
+            <circle cx="200" cy="160" r="20" fill="#7c3aed" />
+            <text x="200" y="165" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">DP</text>
+            
+            <circle cx="80" cy="140" r="18" fill="#6366f1" />
+            <text x="80" y="145" textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">B-O</text>
+            
+            <circle cx="320" cy="140" r="20" fill="#9333ea" />
+            <text x="320" y="145" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">Graph</text>
+          </svg>
+        </div>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+          Визуализация связей между темами курса. Размер узла отражает сложность темы.
+        </p>
       </div>
     </div>
   );

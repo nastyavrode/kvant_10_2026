@@ -81,3 +81,21 @@ export interface TopicDifficulty {
   errorRate: number;
   difficultQuestions: { question: string; errorCount: number }[];
 }
+
+export interface Comment {
+  id: string;
+  noteId: string;
+  authorId: string;
+  authorName: string;
+  text: string;
+  createdAt: string;
+}
+
+export interface UserStats {
+  userId: string;
+  currentStreak: number;
+  longestStreak: number;
+  lastActiveDate: string;
+  totalNotes: number;
+  totalQuizzes: number;
+}
