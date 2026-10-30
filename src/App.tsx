@@ -13,6 +13,7 @@ import SearchPage from './pages/SearchPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import TopicsPage from './pages/TopicsPage';
 import OfficialNotesPage from './pages/OfficialNotesPage';
+import DesignSystemPage from './pages/DesignSystemPage';
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -38,6 +39,7 @@ function AppRoutes() {
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/topics" element={<TopicsPage />} />
           <Route path="/official" element={<OfficialNotesPage />} />
+          <Route path="/design" element={<DesignSystemPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Layout>

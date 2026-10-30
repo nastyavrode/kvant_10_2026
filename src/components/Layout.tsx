@@ -29,6 +29,7 @@ export default function Layout({ children }: LayoutProps) {
     { id: 'shared', label: 'Общие конспекты', icon: GraduationCap, path: '/shared' },
     { id: 'quiz', label: 'Самопроверка', icon: Brain, path: '/quiz' },
     { id: 'search', label: 'Поиск', icon: Search, path: '/search' },
+    { id: 'design', label: 'Дизайн-система', icon: Sparkles, path: '/design' },
   ];
 
   const teacherMenu = [
@@ -37,6 +38,7 @@ export default function Layout({ children }: LayoutProps) {
     { id: 'notes', label: 'Конспекты курса', icon: FileText, path: '/notes' },
     { id: 'topics', label: 'Темы курса', icon: GraduationCap, path: '/topics' },
     { id: 'official', label: 'Материалы', icon: Sparkles, path: '/official' },
+    { id: 'design', label: 'Дизайн-система', icon: Sparkles, path: '/design' },
   ];
 
   const menu = user?.role === 'teacher' ? teacherMenu : studentMenu;
