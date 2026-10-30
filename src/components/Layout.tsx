@@ -5,7 +5,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   BookOpen, FileText, Brain, BarChart3, LogOut, Menu, X,
-  GraduationCap, Search, ChevronRight, Sparkles, Sun, Moon, Palette
+  GraduationCap, Search, ChevronRight, Sparkles, Sun, Moon
 } from 'lucide-react';
 import StreakBadge from './StreakBadge';
 
@@ -27,7 +27,6 @@ export default function Layout({ children }: LayoutProps) {
     { id: 'shared', label: 'Общие конспекты', icon: GraduationCap, path: '/shared' },
     { id: 'quiz', label: 'Самопроверка', icon: Brain, path: '/quiz' },
     { id: 'search', label: 'Поиск', icon: Search, path: '/search' },
-    { id: 'design', label: 'Дизайн', icon: Palette, path: '/design' },
   ];
 
   const teacherMenu = [
@@ -36,7 +35,6 @@ export default function Layout({ children }: LayoutProps) {
     { id: 'notes', label: 'Конспекты', icon: FileText, path: '/notes' },
     { id: 'topics', label: 'Темы курса', icon: GraduationCap, path: '/topics' },
     { id: 'official', label: 'Материалы', icon: Sparkles, path: '/official' },
-    { id: 'design', label: 'Дизайн', icon: Palette, path: '/design' },
   ];
 
   const menu = user?.role === 'teacher' ? teacherMenu : studentMenu;

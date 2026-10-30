@@ -1,96 +1,101 @@
 ---
 name: Умный конспект
-description: Цифровой сервис для совместной работы с учебными материалами. Образовательная платформа с фокусом на ясность, продуктивность и академическую эстетику.
+version: 2.0
+description: >
+  Цифровой сервис для совместной работы с учебными материалами.
+  Образовательная платформа в академическом стиле — изумрудный и золотой,
+  с типографикой Playfair Display для заголовков и Inter для текста.
 
 colors:
-  primary: "#4F46E5"
-  primary-light: "#6366F1"
-  primary-dark: "#3730A3"
-  secondary: "#7C3AED"
-  secondary-light: "#8B5CF6"
-  accent: "#F59E0B"
-  success: "#10B981"
-  warning: "#F59E0B"
-  error: "#EF4444"
-  info: "#3B82F6"
-  
-  neutral-50: "#FAFAFA"
-  neutral-100: "#F5F5F5"
-  neutral-200: "#E5E5E5"
-  neutral-300: "#D4D4D4"
-  neutral-400: "#A3A3A3"
-  neutral-500: "#737373"
-  neutral-600: "#525252"
-  neutral-700: "#404040"
-  neutral-800: "#262626"
-  neutral-900: "#171717"
-  
-  surface-light: "#FFFFFF"
-  surface-dark: "#1F2937"
-  background-light: "#F9FAFB"
-  background-dark: "#111827"
+  primary: "#064E3B"
+  primary-light: "#065F46"
+  primary-medium: "#047857"
+  primary-bright: "#059669"
+  on-primary: "#FFFFFF"
+
+  secondary: "#D97706"
+  secondary-light: "#F59E0B"
+  secondary-warm: "#FBBF24"
+  on-secondary: "#FFFFFF"
+
+  success: "#059669"
+  warning: "#D97706"
+  error: "#DC2626"
+  info: "#0891B2"
+
+  surface: "#FFFFFF"
+  surface-dark: "#292524"
+  background: "#FEFDF8"
+  background-dark: "#1C1917"
+  ivory: "#FFFBEB"
+  light-bg: "#F0FDF4"
+
+  text: "#1C1917"
+  text-secondary: "#57534E"
+  text-muted: "#A8A29E"
+  on-text: "#FAFAF9"
+
+  border: "#E7E5E4"
+  border-light: "#F5F5F4"
+  border-dark: "#44403C"
 
 typography:
-  font-primary:
-    fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-    fontSize: 1rem
-    lineHeight: 1.5
-    fontWeight: 400
-  
+  font-display:
+    fontFamily: "'Playfair Display', Georgia, serif"
+
+  font-body:
+    fontFamily: "Inter, -apple-system, sans-serif"
+
   font-mono:
     fontFamily: "'JetBrains Mono', 'Fira Code', monospace"
-    fontSize: 0.875rem
-    lineHeight: 1.6
-  
+
   h1:
-    fontFamily: "Inter, sans-serif"
+    fontFamily: "{typography.font-display.fontFamily}"
+    fontSize: 2.5rem
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: "-0.02em"
+
+  h2:
+    fontFamily: "{typography.font-display.fontFamily}"
     fontSize: 2rem
     fontWeight: 700
     lineHeight: 1.2
     letterSpacing: "-0.02em"
-  
-  h2:
-    fontFamily: "Inter, sans-serif"
+
+  h3:
+    fontFamily: "{typography.font-display.fontFamily}"
     fontSize: 1.5rem
     fontWeight: 700
     lineHeight: 1.3
     letterSpacing: "-0.01em"
-  
-  h3:
-    fontFamily: "Inter, sans-serif"
-    fontSize: 1.25rem
-    fontWeight: 600
-    lineHeight: 1.4
-  
+
   body-lg:
-    fontFamily: "Inter, sans-serif"
+    fontFamily: "{typography.font-body.fontFamily}"
     fontSize: 1.125rem
     lineHeight: 1.6
-  
+
   body-md:
-    fontFamily: "Inter, sans-serif"
+    fontFamily: "{typography.font-body.fontFamily}"
     fontSize: 1rem
-    lineHeight: 1.5
-  
+    lineHeight: 1.6
+
   body-sm:
-    fontFamily: "Inter, sans-serif"
+    fontFamily: "{typography.font-body.fontFamily}"
     fontSize: 0.875rem
     lineHeight: 1.5
-  
-  caption:
-    fontFamily: "Inter, sans-serif"
-    fontSize: 0.75rem
-    lineHeight: 1.4
-    letterSpacing: "0.01em"
 
-rounded:
-  none: 0px
-  sm: 6px
-  md: 8px
-  lg: 12px
-  xl: 16px
-  2xl: 20px
-  full: 9999px
+  caption:
+    fontFamily: "{typography.font-body.fontFamily}"
+    fontSize: 0.75rem
+    fontWeight: 600
+    lineHeight: 1.4
+    letterSpacing: "0.15em"
+
+  code:
+    fontFamily: "{typography.font-mono.fontFamily}"
+    fontSize: 0.875rem
+    lineHeight: 1.6
 
 spacing:
   xs: 4px
@@ -100,135 +105,228 @@ spacing:
   xl: 32px
   2xl: 48px
   3xl: 64px
+  4xl: 96px
+
+rounded:
+  sm: 8px
+  md: 12px
+  lg: 16px
+  xl: 24px
+  2xl: 32px
+  full: 9999px
 
 elevation:
-  sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)"
-  md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
-  lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
-  xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+  sm: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)"
+  md: "0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05)"
+  lg: "0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04)"
+  xl: "0 20px 40px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.04)"
+  card: "0 2px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06)"
+  card-hover: "0 4px 12px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.08)"
 
 components:
-  button-primary:
+  btn-primary:
     backgroundColor: "{colors.primary}"
-    textColor: "#FFFFFF"
-    rounded: "{rounded.md}"
-    padding: "12px 24px"
+    textColor: "{colors.on-primary}"
+    rounded: "{rounded.full}"
+    padding: "14px 32px"
     typography: "{typography.body-md}"
-  
-  button-primary-hover:
-    backgroundColor: "{colors.primary-dark}"
-  
-  button-secondary:
-    backgroundColor: "{colors.neutral-100}"
-    textColor: "{colors.neutral-700}"
-    rounded: "{rounded.md}"
-    padding: "10px 20px"
-  
-  card:
-    backgroundColor: "{colors.surface-light}"
+
+  btn-primary-hover:
+    backgroundColor: "{colors.primary-light}"
+
+  btn-accent:
+    backgroundColor: "{colors.secondary}"
+    textColor: "{colors.on-secondary}"
+    rounded: "{rounded.full}"
+    padding: "14px 32px"
+
+  btn-outline:
+    backgroundColor: "transparent"
+    textColor: "{colors.primary}"
+    rounded: "{rounded.full}"
+    padding: "12px 28px"
+
+  uni-card:
+    backgroundColor: "{colors.surface}"
     rounded: "{rounded.xl}"
     padding: "{spacing.lg}"
-    elevation: "{elevation.sm}"
-  
-  input:
-    backgroundColor: "{colors.surface-light}"
-    textColor: "{colors.neutral-900}"
-    rounded: "{rounded.md}"
-    padding: "10px 16px"
-    typography: "{typography.body-md}"
-  
-  sidebar:
-    backgroundColor: "{colors.surface-light}"
-    width: "288px"
+    elevation: "{elevation.card}"
+
+  program-card:
+    backgroundColor: "{colors.surface}"
+    rounded: "{rounded.xl}"
     padding: "{spacing.lg}"
+    elevation: "{elevation.card}"
+
+  uni-input:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.text}"
+    rounded: "{rounded.md}"
+    padding: "12px 18px"
+    typography: "{typography.body-md}"
+
+  uni-badge:
+    rounded: "{rounded.full}"
+    padding: "4px 12px"
+    typography: "{typography.caption}"
+
+  uni-sidebar:
+    backgroundColor: "{colors.primary}"
+    width: 280px
+    padding: "{spacing.lg}"
+
+  hero-section:
+    backgroundColor: "{colors.primary}"
+    rounded: "{rounded.2xl}"
+    padding: "{spacing.3xl}"
 ---
 
 ## Overview
 
-«Умный конспект» — образовательная платформа, сочетающая академическую строгость с современным минимализмом. Дизайн вдохновлён премиальными нотбуками и инструментами для продуктивности: чистые линии, продуманная типографика, щедрые отступы и интуитивная навигация.
+«Умный конспект» — образовательная платформа в академическом стиле. Визуальный язык вдохновлён премиальными университетскими сайтами: глубокий изумрудный, тёплое золото, кремовый фон и элегантная типографика с serif-заголовками.
 
-Визуальный язык передаёт ощущение структурированности и ясности — ключевых качеств для учебного процесса. Интерфейс не отвлекает от содержания, а помогает сосредоточиться на главном.
+Дизайн передаёт ощущение академической строгости, доверия и интеллектуальной среды. Интерфейс не отвлекает от содержания, а помогает сосредоточиться на учёбе.
 
 ## Colors
 
-Палитра построена на контрасте между глубоким индиго (основной цвет) и тёплыми нейтральными оттенками. Индиго ассоциируется с академической средой, интеллектом и доверием.
+Палитра построена на контрасте между глубоким изумрудным (основной цвет) и тёплым золотом (акцент). Изумрудный ассоциируется с академической средой, ростом и стабильностью. Золото — с достижениями, наградами и мотивацией.
 
-- **Primary (#4F46E5):** Основной индиго — для ключевых действий, ссылок и акцентов.
-- **Secondary (#7C3AED):** Фиолетовый — для ИИ-функций и творческих элементов.
-- **Accent (#F59E0B):** Янтарный — для уведомлений, достижений и серии дней (streak).
-- **Success (#10B981):** Изумрудный — для положительных результатов и подтверждений.
-- **Neutral (#F9FAFB → #171717):** Шкала серых — для фона, текста и границ.
+### Primary — Изумрудный
 
-Тёмная тема использует те же цветовые токены с инвертированной яркостью для комфортной работы в вечернее время.
+- **primary (#064E3B):** Основной цвет — сайдбар, заголовки, ключевые элементы
+- **primary-light (#065F46):** Hover-состояния кнопок
+- **primary-medium (#047857):** Градиенты
+- **primary-bright (#059669):** Акценты, ссылки, иконки
+
+### Secondary — Золотой
+
+- **secondary (#D97706):** Акцентный цвет — CTA, streak, награды
+- **secondary-light (#F59E0B):** Hover-состояния
+- **secondary-warm (#FBBF24):** Декоративные элементы, бейджи
+
+### Semantic
+
+- **success (#059669):** Успешные действия, высокие баллы
+- **warning (#D97706):** Предупреждения, средние баллы
+- **error (#DC2626):** Ошибки, низкие баллы
+- **info (#0891B2):** Информация, статистика
+
+### Neutral
+
+- **surface (#FFFFFF):** Фон карточек
+- **background (#FEFDF8):** Основной кремовый фон страницы
+- **ivory (#FFFBEB):** Тёплый фон для акцентных блоков
+- **text (#1C1917):** Основной текст
+- **text-secondary (#57534E):** Вторичный текст
+- **text-muted (#A8A29E):** Подписи, метаданные
 
 ## Typography
 
-Интерфейс использует Inter — современный гротеск с отличной читаемостью на экранах. Моноширинный шрифт JetBrains Mono применяется для кода и формул.
+Интерфейс использует два основных шрифта: **Playfair Display** для заголовков (элегантный serif, ассоциирующийся с академической средой) и **Inter** для основного текста (чистый sans-serif для отличной читаемости).
 
-- **Заголовки:** Inter Bold с отрицательным letter-spacing для компактности.
-- **Основной текст:** Inter Regular с line-height 1.5 для комфортного чтения.
-- **Код:** JetBrains Mono с увеличенным line-height 1.6 для разборчивости.
-- **Подписи:** Inter с увеличенным letter-spacing для метаданных.
+### Заголовки (Playfair Display)
+
+- **H1:** 2.5rem / Bold / line-height 1.2 / letter-spacing -0.02em
+- **H2:** 2rem / Bold / line-height 1.2 / letter-spacing -0.02em
+- **H3:** 1.5rem / Bold / line-height 1.3 / letter-spacing -0.01em
+
+### Основной текст (Inter)
+
+- **body-lg:** 1.125rem / Regular / line-height 1.6
+- **body-md:** 1rem / Regular / line-height 1.6
+- **body-sm:** 0.875rem / Regular / line-height 1.5
+- **caption:** 0.75rem / Semibold / uppercase / letter-spacing 0.15em
+
+### Код (JetBrains Mono)
+
+- **code:** 0.875rem / Regular / line-height 1.6
 
 ## Layout & Spacing
 
-Система отступов основана на 4-пиксельной сетке. Компоненты используют щедрые внутренние отступы (16-24px) для создания «воздуха» и визуальной иерархии.
+Система отступов основана на 4-пиксельной сетке. Компоненты используют щедрые отступы для создания «воздуха» и академической элегантности.
 
-- **xs (4px):** Микро-отступы внутри элементов.
-- **sm (8px):** Отступы между связанными элементами.
-- **md (16px):** Стандартные отступы в компонентах.
-- **lg (24px):** Отступы между секциями.
-- **xl (32px):** Отступы между крупными блоками.
+- **xs (4px):** Микро-отступы
+- **sm (8px):** Между связанными элементами
+- **md (16px):** Стандартные внутренние отступы
+- **lg (24px):** Карточки, секции
+- **xl (32px):** Между блоками
+- **2xl (48px):** Между крупными секциями
+- **3xl (64px):** Hero-секции
+- **4xl (96px):** Максимальные отступы
 
-Сайдбар фиксированной ширины 288px обеспечивает стабильную навигацию на десктопе и скрывается на мобильных устройствах.
+Сайдбар фиксированной ширины **280px** с тёмно-изумрудным фоном.
 
 ## Elevation & Depth
 
-Тени создают ощущение глубины и иерархии. Компоненты с более высокой тенью визуально «приподняты» над поверхностью.
+Тени мягкие и тёплые, создают ощущение глубины без агрессии.
 
-- **sm:** Карточки и панели — лёгкая тень для отделения от фона.
-- **md:** Выпадающие меню и модалки — средняя тень для фокуса внимания.
-- **lg:** Диалоговые окна — выраженная тень для критически важных элементов.
-- **xl:** Всплывающие подсказки — максимальная тень для временных элементов.
+- **sm:** Лёгкая тень для мелких элементов
+- **md:** Стандартная тень для выпадающих меню
+- **lg:** Для модальных окон
+- **xl:** Максимальная тень для критически важных элементов
+- **card:** Специальная тень для карточек — мягкая и тёплая
+- **card-hover:** Усиленная тень при наведении на карточку
 
 ## Shapes
 
-Скругления создают дружелюбный и современный вид. Используются умеренные радиусы (6-16px) для баланса между строгостью и доступностью.
+Скругления умеренные и дружелюбные. Кнопки и бейджи имеют полную скруглённость (pill-форма), карточки — крупные скругления.
 
-- **sm (6px):** Кнопки, инпуты, бейджи.
-- **md (8px):** Теги, чипы, аватары.
-- **lg (12px):** Карточки, панели.
-- **xl (16px):** Модальные окна, крупные контейнеры.
-- **full (9999px):** Аватары, бейджи, индикаторы.
+- **sm (8px):** Мелкие элементы, инпуты
+- **md (12px):** Теги, чипы
+- **lg (16px):** Карточки
+- **xl (24px):** Крупные карточки, панели
+- **2xl (32px):** Hero-секции, модальные окна
+- **full (9999px):** Кнопки, бейджи, аватары
 
 ## Components
 
 ### Buttons
-Основные кнопки используют primary color с белым текстом. При наведении фон становится темнее (primary-dark). Вторичные кнопки — нейтральный серый фон с тёмным текстом.
+
+- **btn-primary:** Изумрудный фон, белый текст, pill-форма, padding 14px 32px
+- **btn-accent:** Золотой фон, белый текст, pill-форма
+- **btn-outline:** Прозрачный фон, изумрудная рамка и текст
 
 ### Cards
-Карточки имеют белый фон, скругление xl, padding lg и лёгкую тень sm. При наведении тень усиливается для интерактивности.
+
+- **uni-card:** Белый фон, скругление xl, padding lg, тень card
+- **program-card:** Аналогично uni-card, используется для тем курса и конспектов
 
 ### Inputs
-Поля ввода имеют белый фон, скругление md, padding 10px 16px и фокусное кольцо primary color с прозрачностью.
+
+- **uni-input:** Белый фон, рамка border, скругление md, padding 12px 18px
+
+### Badges
+
+- **uni-badge:** Pill-форма, padding 4px 12px, typography caption (uppercase, letter-spacing 0.15em)
 
 ### Sidebar
-Боковая панель фиксированной ширины 288px с белым фоном и правой границей. На мобильных устройствах скрывается за гамбургер-меню.
+
+- **uni-sidebar:** Изумрудный фон (primary), ширина 280px, золотые акценты для активного пункта меню
+
+### Hero Section
+
+- **hero-section:** Градиент изумрудный → изумрудный светлый, скругление 2xl, padding 3xl, декоративные круги
 
 ## Do's and Don'ts
 
 ### ✅ Do
-- Используйте primary color для ключевых действий (CTA).
-- Применяйте secondary color для ИИ-функций и творческих элементов.
-- Соблюдайте контрастность текста (минимум 4.5:1 для WCAG AA).
-- Используйте щедрые отступы для создания «воздуха».
-- Применяйте тени для создания иерархии.
-- Используйте Inter для основного текста и JetBrains Mono для кода.
+
+- Используйте **Playfair Display** для всех заголовков (H1-H3)
+- Применяйте **primary (#064E3B)** для сайдбара и ключевых заголовков
+- Используйте **secondary (#D97706)** для наград, streak и CTA
+- Соблюдайте контрастность текста (минимум 4.5:1 для WCAG AA)
+- Используйте **pill-форму** (rounded-full) для кнопок и бейджей
+- Применяйте **creamy background (#FEFDF8)** для фона страницы
+- Добавляйте **section-label** (uppercase, letter-spacing, золотой) перед заголовками секций
+- Используйте **uni-card** с мягкими тенями для карточек
 
 ### ❌ Don't
-- Не используйте более 2 основных цветов в одном экране.
-- Не размещайте текст на цветном фоне без проверки контрастности.
-- Не используйте декоративные шрифты для основного текста.
-- Не перегружайте интерфейс тенями — достаточно 1-2 уровней.
-- Не используйте чистый чёрный (#000) — применяйте neutral-900 (#171717).
-- Не размещайте интерактивные элементы слишком близко друг к другу (минимум 8px).
+
+- Не используйте чистый чёрный (#000) — применяйте text (#1C1917)
+- Не используйте Inter для заголовков — только Playfair Display
+- Не размещайте текст на изумрудном фоне без проверки контрастности
+- Не используйте квадратные кнопки — только pill-форма
+- Не перегружайте интерфейс тенями — достаточно 1-2 уровней
+- Не используйте холодные серые — только тёплые нейтральные оттенки
+- Не размещайте более 2 акцентных цветов на одном экране
+- Не используйте тонкие шрифты (300) для основного текста
